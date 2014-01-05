@@ -14,10 +14,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    imagescollectionview.cpp
+    imagescollectionview.cpp \
+    imagelabel.cpp
 
 HEADERS  += mainwindow.h \
-    imagescollectionview.h
+    imagescollectionview.h \
+    imagelabel.h
 
 RESOURCES += \
     cbir.qrc

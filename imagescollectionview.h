@@ -4,7 +4,10 @@
 #include <QWidget>
 #include <QLabel>
 
+#include "imagelabel.h"
+
 class QGridLayout;
+class QMouseEvent;
 
 class ImagesCollectionView : public QWidget
 {
@@ -19,15 +22,19 @@ signals:
 
 public slots:
 
+protected:
+    void mousePressEvent(QMouseEvent *event);
+
 private:
     void printQStringToConsole(QString log);
     void createImagePage();
     int count;
+    int selectedIndexofImage;
     QWidget *imagePageWidget;
     QString basePath;
     QStringList imagesCollection;
     QGridLayout* pageGrid;
-    QLabel images[16];
+    ImageLabel images[16];
 };
 
 #endif // IMAGESCOLLECTIONVIEW_H
