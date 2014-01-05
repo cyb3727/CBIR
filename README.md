@@ -1,4 +1,4 @@
 CBIR
 ====
 
-a little search programming based on images
+a little search program based on images
