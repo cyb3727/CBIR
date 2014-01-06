@@ -6,6 +6,7 @@
 class QAction;
 class QListWidget;
 class ImagesCollectionView;
+class ImageProccesser;
 
 class MainWindow : public QMainWindow
 {
@@ -30,7 +31,7 @@ private:
     QAction *searchAction;
     QListWidget *listWidget;
     ImagesCollectionView *imagesCollectionView;
-
+    ImageProccesser *imageProccessor;
     char **pathArray;
 };
 

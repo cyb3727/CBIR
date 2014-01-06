@@ -18,6 +18,7 @@ public:
     void readDirectoryFiles();
     void topreviousPage();
     void tonextPage();
+    QStringList findSimilarities(QString fileName);
 signals:
 
 public slots:

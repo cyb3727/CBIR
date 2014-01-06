@@ -8,6 +8,7 @@
 
 #include "mainwindow.h"
 #include "imagescollectionview.h"
+#include "imageproccesser.h"
 
 using namespace std;
 
@@ -23,6 +24,8 @@ MainWindow::MainWindow(QWidget *parent)
     listWidget->addItem(tr("Advanced"));
 
     imagesCollectionView = new ImagesCollectionView;
+    imageProccessor = new ImageProccesser;
+
     setCentralWidget(imagesCollectionView);
     setMinimumSize(1105,837);
 }
@@ -67,6 +70,9 @@ void MainWindow::import()
         imagesCollectionView->setBasePath(directoryName);
         printQStringToConsole(directoryName);
         imagesCollectionView->readDirectoryFiles();
+
+        imageProccessor->setDirectory(directoryName);
+        imageProccessor->proccessCreateTxtInfoForImages();
     }
 }
 

@@ -1,8 +1,9 @@
 #include <QGridLayout>
 #include <QDir>
 #include <QMouseEvent>
-
+#include <QImage>
 #include <iostream>
+
 using namespace std;
 
 #include "imagescollectionview.h"
@@ -21,9 +22,10 @@ void ImagesCollectionView::readDirectoryFiles()
     QDir dir(basePath);
     if (!dir.exists())
         return;
-    imagesCollection = dir.entryList();
-    imagesCollection.filter("jpg");
-    imagesCollection.sort();
+
+    imagesCollection = dir.entryList().filter("jpg");
+
+    cout << "CBIR LOG ImagesCollectionView: files count " << imagesCollection.size() << endl;
     count = 0;
     createImagePage();
 }
@@ -99,4 +101,41 @@ void ImagesCollectionView::mousePressEvent(QMouseEvent *event)
             }
         }
     }
+}
+
+QStringList ImagesCollectionView::findSimilarities(QString fileName)
+{
+    QImage *selectedImage = new QImage;
+    selectedImage->load(basePath + "/" + fileName);
+
+    int Pattern[24][3] = {{0, 0, 0},
+        {0, 182, 0},
+        {0, 255, 170},
+        {36, 73, 0},
+        {36, 146, 170},
+        {36, 255, 0},
+        {73, 36, 170},
+        {73, 146, 0},
+        {73, 219, 170},
+        {109, 36, 0},
+        {109, 109, 170},
+        {109, 219, 0},
+        {146, 0, 170},
+        {146, 182, 170},
+        {182, 0, 0},
+        {182, 73, 170},
+        {182, 182, 0},
+        {182, 255, 170},
+        {219, 73, 0},
+        {219, 146, 170},
+        {219, 255, 0},
+        {255, 36, 170},
+        {255, 146, 0},
+        {255, 255, 255}}; // color pattern to be mapped
+    int colorTest[96];
+    memset(colorTest, 0, sizeof(int)* 96);
+
+    uchar* imagePixels = selectedImage->bits();
+
+    delete selectedImage;
 }
