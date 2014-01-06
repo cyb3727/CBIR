@@ -20,10 +20,10 @@ private slots:
     void import();
     void topreviouspage();
     void tonextpage();
+    void search();
 private:
     void createActions();
     void createToolBar();
-    void printQStringToConsole(QString log);
     QToolBar *actionToolBar;
     QAction *importAction;
     QAction *previousAction;

@@ -57,20 +57,13 @@ void ImageProccesser::proccessCreateTxtInfoForImages()
         {255, 255, 255}}; // color patter to be mapped
 
     int imagesCount = imagesCollection.size();
+
     int colorLookUp[96];
     memset(colorLookUp, 0, sizeof(int)* 96);
 
-    QFile file("/Users/Johnson/Desktop/Histogram.txt");
-    if (!file.open(QIODevice::WriteOnly)) {
-//        QMessageBox::warning(this, tr("Histogram.txt"),
-//                             tr("Cannot write file %1:\n%2.").arg(file.fileName()).arg(file.errorString()));
-        return;
-    }
+    FILE* file = fopen("/Users/Johnson/Desktop/Histogram.txt","wt+");
 
     cout << "CBIR LOG ImageProccessor: open histogram.txt successfully" << endl;
-
-    QDataStream out(&file);
-    out.setVersion(QDataStream::Qt_4_3);
 
     QApplication::setOverrideCursor(Qt::WaitCursor);
 
@@ -81,24 +74,22 @@ void ImageProccesser::proccessCreateTxtInfoForImages()
         int width = image->width();
         int height = image->height();
         int regionSize = width * height / 4;
-        int bytePerLine = image->bytesPerLine();
         int R,G,B, min, index;
-
-        uchar* imagePixels = image->bits();
 
         for (int y = 0; y < height/2; y++) {
             for (int x = 0; x < width/2; x++) {
-                R = (int)imagePixels[y * bytePerLine + 3 * x + 2];
-                G = (int)imagePixels[y * bytePerLine + 3 * x + 1];
-                B = (int)imagePixels[y * bytePerLine + 3 * x];
+                QRgb pixels = image->pixel(x, y);
+                QColor color = QColor(pixels);
+                R = color.red(); G = color.green(); B = color.blue();
+
                 min = abs(B - Pattern[0][2]) +
                         abs(G - Pattern[0][1]) +
                         abs(R - Pattern[0][0]);
                 index = 0;
                 for (int k = 1; k < 24; k++) {
-                    int temp = abs(B - Pattern[0][2]) +
-                            abs(G - Pattern[0][1]) +
-                            abs(R - Pattern[0][0]);
+                    int temp = abs(B - Pattern[k][2]) +
+                            abs(G - Pattern[k][1]) +
+                            abs(R - Pattern[k][0]);
                     if (temp < min) {
                         min = temp;
                         index = k;
@@ -109,18 +100,18 @@ void ImageProccesser::proccessCreateTxtInfoForImages()
         }
 
         for (int y = height/2+1; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                R = (int)imagePixels[y * bytePerLine + 3 * x + 2];
-                G = (int)imagePixels[y * bytePerLine + 3 * x + 1];
-                B = (int)imagePixels[y * bytePerLine + 3 * x];
+            for (int x = 0; x < width/2; x++) {
+                QRgb pixels = image->pixel(x, y);
+                QColor color = QColor(pixels);
+                R = color.red(); G = color.green(); B = color.blue();
                 min = abs(B - Pattern[0][2]) +
                         abs(G - Pattern[0][1]) +
                         abs(R - Pattern[0][0]);
                 index = 0;
                 for (int k = 1; k < 24; k++) {
-                    int temp = abs(B - Pattern[0][2]) +
-                            abs(G - Pattern[0][1]) +
-                            abs(R - Pattern[0][0]);
+                    int temp = abs(B - Pattern[k][2]) +
+                            abs(G - Pattern[k][1]) +
+                            abs(R - Pattern[k][0]);
                     if (temp < min) {
                         min = temp;
                         index = k;
@@ -132,17 +123,17 @@ void ImageProccesser::proccessCreateTxtInfoForImages()
 
         for (int y = 0; y < height/2; y++) {
             for (int x = width/2+1; x < width; x++) {
-                R = (int)imagePixels[y * bytePerLine + 3 * x + 2];
-                G = (int)imagePixels[y * bytePerLine + 3 * x + 1];
-                B = (int)imagePixels[y * bytePerLine + 3 * x];
+                QRgb pixels = image->pixel(x, y);
+                QColor color = QColor(pixels);
+                R = color.red(); G = color.green(); B = color.blue();
                 min = abs(B - Pattern[0][2]) +
                         abs(G - Pattern[0][1]) +
                         abs(R - Pattern[0][0]);
                 index = 0;
                 for (int k = 1; k < 24; k++) {
-                    int temp = abs(B - Pattern[0][2]) +
-                            abs(G - Pattern[0][1]) +
-                            abs(R - Pattern[0][0]);
+                    int temp = abs(B - Pattern[k][2]) +
+                            abs(G - Pattern[k][1]) +
+                            abs(R - Pattern[k][0]);
                     if (temp < min) {
                         min = temp;
                         index = k;
@@ -154,17 +145,17 @@ void ImageProccesser::proccessCreateTxtInfoForImages()
 
         for (int y = height/2+1; y < height; y++) {
             for (int x = width/2+1; x < width; x++) {
-                R = (int)imagePixels[y * bytePerLine + 3 * x + 2];
-                G = (int)imagePixels[y * bytePerLine + 3 * x + 1];
-                B = (int)imagePixels[y * bytePerLine + 3 * x];
+                QRgb pixels = image->pixel(x, y);
+                QColor color = QColor(pixels);
+                R = color.red(); G = color.green(); B = color.blue();
                 min = abs(B - Pattern[0][2]) +
                         abs(G - Pattern[0][1]) +
                         abs(R - Pattern[0][0]);
                 index = 0;
                 for (int k = 1; k < 24; k++) {
-                    int temp = abs(B - Pattern[0][2]) +
-                            abs(G - Pattern[0][1]) +
-                            abs(R - Pattern[0][0]);
+                    int temp = abs(B - Pattern[k][2]) +
+                            abs(G - Pattern[k][1]) +
+                            abs(R - Pattern[k][0]);
                     if (temp < min) {
                         min = temp;
                         index = k;
@@ -174,17 +165,20 @@ void ImageProccesser::proccessCreateTxtInfoForImages()
             }
         }
         QString filenameline = QString("%1\n").arg(imagesCollection[i]);
-        out << qPrintable(filenameline);
+
+        const char* pic = qPrintable(filenameline);
+        fwrite(pic, strlen(pic), 1, file);
 
         for (int k = 0; k < 96; k++) {
-            double f = colorLookUp[k] / regionSize;
-            out << f << "\n";
+            char* pic = new char[100];
+            sprintf(pic, "%lf\n", (double)colorLookUp[k] / regionSize);
+            fwrite(pic, strlen(pic), 1, file);
+            delete pic;
         }
-
         memset(colorLookUp, 0, sizeof(int)*96);
         delete image;
     }
-
+    fclose(file);
     cout << "CBIR LOG ImageProccessor: create the histograms successfully" << endl;
     QApplication::restoreOverrideCursor();
 }

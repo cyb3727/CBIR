@@ -18,6 +18,7 @@ public:
     void readDirectoryFiles();
     void topreviousPage();
     void tonextPage();
+    void searchSimilarities();
     QStringList findSimilarities(QString fileName);
 signals:
 
@@ -36,6 +37,10 @@ private:
     QStringList imagesCollection;
     QGridLayout* pageGrid;
     ImageLabel images[16];
+
+    int partition(double *data, int *index, int low,int high);
+    void sort(double *data, int *index, int low, int high);
+    void quick_sort(double *data, int *index, int n);
 };
 
 #endif // IMAGESCOLLECTIONVIEW_H

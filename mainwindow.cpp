@@ -47,6 +47,7 @@ void MainWindow::createActions()
 
     searchAction = new QAction(tr("&search"), this);
     searchAction->setIcon(QIcon(":/images/search.png"));
+    connect(searchAction,SIGNAL(triggered()),this, SLOT(search()));
 }
 
 void MainWindow::createToolBar()
@@ -68,7 +69,9 @@ void MainWindow::import()
                                                               | QFileDialog::DontResolveSymlinks);
     if (!directoryName.isEmpty()) {
         imagesCollectionView->setBasePath(directoryName);
-        printQStringToConsole(directoryName);
+
+        cout << "CBIR LOG Mainwindow: select directory name " << qPrintable(directoryName) << endl;
+
         imagesCollectionView->readDirectoryFiles();
 
         imageProccessor->setDirectory(directoryName);
@@ -76,20 +79,22 @@ void MainWindow::import()
     }
 }
 
-void MainWindow::printQStringToConsole(QString log)
-{
-    QByteArray out(log.toLatin1());
-    cout << "CBIR LOG: " << out.data() << endl;
-}
-
 void MainWindow::topreviouspage()
 {
+    cout << "CBIR LOG Mainwindow: to previous page " << endl;
     imagesCollectionView->topreviousPage();
 }
 
 void MainWindow::tonextpage()
 {
+    cout << "CBIR LOG Mainwindow: to next page " << endl;
     imagesCollectionView->tonextPage();
+}
+
+void MainWindow::search()
+{
+    cout << "CBIR LOG Search: search the similar pictures" << endl;
+    imagesCollectionView->searchSimilarities();
 }
 
 MainWindow::~MainWindow()
