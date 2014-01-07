@@ -4,6 +4,9 @@
 #include <QLabel>
 #include <QListWidget>
 #include <QFileDialog>
+#include <QLineEdit>
+#include <QPushButton>
+
 #include <iostream>
 
 #include "mainwindow.h"
@@ -17,11 +20,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
     createActions();
     createToolBar();
-    listWidget = new QListWidget;
-    listWidget->addItem(tr("Appearance"));
-    listWidget->addItem(tr("Web Browser"));
-    listWidget->addItem(tr("Mail & News"));
-    listWidget->addItem(tr("Advanced"));
 
     imagesCollectionView = new ImagesCollectionView;
     imageProccessor = new ImageProccesser;
@@ -59,6 +57,20 @@ void MainWindow::createToolBar()
     actionToolBar->addAction(nextAction);
     actionToolBar->addSeparator();
     actionToolBar->addAction(searchAction);
+
+    inputToolBar = addToolBar(tr("&input"));
+    inputLabel = new QLabel(tr("& file name:"), this);
+    inputFileName = new QLineEdit;
+    inputFileName->setFixedWidth(200);
+    inputLabel->setBuddy(inputFileName);
+    inputToolBar->addWidget(inputLabel);
+    inputToolBar->addWidget(inputFileName);
+
+    confirmToSearch = new QPushButton(tr("&Search"), this);
+    inputToolBar->addWidget(confirmToSearch);
+
+    connect(confirmToSearch, SIGNAL(clicked()),
+            this, SLOT(searchClicked()));
 }
 
 void MainWindow::import()
@@ -95,6 +107,12 @@ void MainWindow::search()
 {
     cout << "CBIR LOG Search: search the similar pictures" << endl;
     imagesCollectionView->searchSimilarities();
+}
+
+void MainWindow::searchClicked()
+{
+    cout << "CBIR LOG MainWindow: searchButton clicked";
+    imagesCollectionView->searchSimilaritiesWithFileName(inputFileName->text());
 }
 
 MainWindow::~MainWindow()

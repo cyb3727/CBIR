@@ -7,6 +7,9 @@ class QAction;
 class QListWidget;
 class ImagesCollectionView;
 class ImageProccesser;
+class QLineEdit;
+class QPushButton;
+class QLabel;
 
 class MainWindow : public QMainWindow
 {
@@ -21,18 +24,25 @@ private slots:
     void topreviouspage();
     void tonextpage();
     void search();
+    void searchClicked();
+
 private:
     void createActions();
     void createToolBar();
-    QToolBar *actionToolBar;
     QAction *importAction;
     QAction *previousAction;
     QAction *nextAction;
     QAction *searchAction;
-    QListWidget *listWidget;
+
     ImagesCollectionView *imagesCollectionView;
     ImageProccesser *imageProccessor;
     char **pathArray;
+
+    QToolBar *actionToolBar;
+    QToolBar *inputToolBar;
+    QLabel *inputLabel;
+    QLineEdit *inputFileName;
+    QPushButton *confirmToSearch;
 };
 
 #endif // MAINWINDOW_H

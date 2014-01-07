@@ -104,6 +104,17 @@ void ImagesCollectionView::mousePressEvent(QMouseEvent *event)
     }
 }
 
+void ImagesCollectionView::searchSimilaritiesWithFileName(QString filename)
+{
+    if (imagesCollection.contains(filename)) {
+        imagesCollection = findSimilarities(filename);
+        count = 0;
+        createImagePage();
+    } else {
+        cout << "CBIR LOG ImagesCollectionView: no this file -- " << qPrintable(filename) << endl;
+    }
+}
+
 void ImagesCollectionView::searchSimilarities()
 {
     if (selectedIndexofImage < 0)
@@ -299,7 +310,7 @@ QStringList ImagesCollectionView::findSimilarities(QString fileName)
 
     cout << "CBIR LOG ImagesCollectionView: find, open Result.txt successfully" << endl;
 
-    for (int i = 0; i < imagesCount; i++) {
+    for (int i = imagesCount - 1; i >= imagesCount; i--) {
         char* pic = new char[1000];
         sprintf(pic, "%s:%lf\n", titleCollection[imageIndex[i]], mixedData[i]);
         fwrite(pic, strlen(pic), 1, output);
@@ -333,6 +344,7 @@ int ImagesCollectionView::partition(double *data, int *index, int low,int high)
     index[low] = indext;
     return low;
 }
+
 void ImagesCollectionView::sort(double *data, int *index, int low, int high)
 {
     if (low >= high)
