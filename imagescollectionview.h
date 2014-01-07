@@ -20,6 +20,7 @@ public:
     void tonextPage();
     void searchSimilarities();
     void searchSimilaritiesWithFileName(QString filename);
+    bool searchSimilaritiesWithSift(QWidget *parent);
     void clearPage();
     QStringList findSimilarities(QString fileName);
 signals:
@@ -32,6 +33,8 @@ protected:
 private:
     void printQStringToConsole(QString log);
     void createImagePage();
+    int sift(char *img1_file, char *img2_file);
+
     int count;
     int selectedIndexofImage;
     QWidget *imagePageWidget;
