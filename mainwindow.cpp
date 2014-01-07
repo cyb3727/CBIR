@@ -6,6 +6,7 @@
 #include <QFileDialog>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QProgressDialog>
 
 #include <iostream>
 
@@ -55,8 +56,6 @@ void MainWindow::createToolBar()
     actionToolBar->addSeparator();
     actionToolBar->addAction(previousAction);
     actionToolBar->addAction(nextAction);
-    actionToolBar->addSeparator();
-    actionToolBar->addAction(searchAction);
 
     inputToolBar = addToolBar(tr("&input"));
     inputLabel = new QLabel(tr("& file name:"), this);
@@ -68,6 +67,8 @@ void MainWindow::createToolBar()
 
     confirmToSearch = new QPushButton(tr("&Search"), this);
     inputToolBar->addWidget(confirmToSearch);
+    inputToolBar->addSeparator();
+    inputToolBar->addAction(searchAction);
 
     connect(confirmToSearch, SIGNAL(clicked()),
             this, SLOT(searchClicked()));
@@ -87,7 +88,7 @@ void MainWindow::import()
         imagesCollectionView->readDirectoryFiles();
 
         imageProccessor->setDirectory(directoryName);
-        imageProccessor->proccessCreateTxtInfoForImages();
+        imageProccessor->proccessCreateTxtInfoForImages(this);
     }
 }
 
