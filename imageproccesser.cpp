@@ -3,6 +3,9 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QApplication>
+#include <QWidget>
+#include <QProgressDialog>
+
 #include <iostream>
 
 #include "imageproccesser.h"
@@ -29,7 +32,7 @@ void ImageProccesser::readDirectoryFiles()
     cout << "CBIR LOG ImageProcessor: read the file list of the directory" << endl;
 }
 
-void ImageProccesser::proccessCreateTxtInfoForImages()
+bool ImageProccesser::proccessCreateTxtInfoForImages(QWidget *parent)
 {
     int Pattern[24][3] = {{0, 0, 0},
         {0, 182, 0},
@@ -67,9 +70,22 @@ void ImageProccesser::proccessCreateTxtInfoForImages()
 
     QApplication::setOverrideCursor(Qt::WaitCursor);
 
+    QProgressDialog progressDialog(parent);
+    progressDialog.setLabelText(QString("Parsing %1").arg(basePath));
+    progressDialog.setRange(0, imagesCount);
+    progressDialog.setModal(true);
+
     for (int i = 0; i < imagesCount; i++) {
         QImage *image = new QImage;
         image->load(basePath + "/" + imagesCollection[i]);
+
+        progressDialog.setValue(i);
+
+        if (progressDialog.wasCanceled()) {
+            QApplication::restoreOverrideCursor();
+            fclose(file);
+            return false;
+        }
 
         int width = image->width();
         int height = image->height();
@@ -181,4 +197,6 @@ void ImageProccesser::proccessCreateTxtInfoForImages()
     fclose(file);
     cout << "CBIR LOG ImageProccessor: create the histograms successfully" << endl;
     QApplication::restoreOverrideCursor();
+
+    return true;
 }
