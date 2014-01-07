@@ -24,6 +24,7 @@ private slots:
     void topreviouspage();
     void tonextpage();
     void search();
+    void clearPage();
     void searchClicked();
 
 private:
@@ -33,6 +34,7 @@ private:
     QAction *previousAction;
     QAction *nextAction;
     QAction *searchAction;
+    QAction *clearAction;
 
     ImagesCollectionView *imagesCollectionView;
     ImageProccesser *imageProccessor;

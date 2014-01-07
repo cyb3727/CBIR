@@ -73,6 +73,15 @@ void ImagesCollectionView::topreviousPage()
     }
 }
 
+void ImagesCollectionView::clearPage()
+{
+    count = 0;
+    imagesCollection = QStringList();
+    delete pageGrid;
+    pageGrid = new QGridLayout;
+    setLayout(pageGrid);
+}
+
 void ImagesCollectionView::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
@@ -189,7 +198,6 @@ QStringList ImagesCollectionView::findSimilarities(QString fileName)
             colorTest[index]++;
         }
     }
-    cout << "here2" << endl;
     for (int y = height/2 + 1; y < height; y++) {
         for (int x = 0; x < width/2; x++) {
             QRgb pixels = selectedImage->pixel(x, y);
@@ -211,7 +219,6 @@ QStringList ImagesCollectionView::findSimilarities(QString fileName)
             colorTest[index + 24]++;
         }
     }
-    cout << "here3" << endl;
     for (int y = 0; y < height/2; y++) {
         for (int x = width/2+1; x < width; x++) {
             QRgb pixels = selectedImage->pixel(x, y);
@@ -255,7 +262,6 @@ QStringList ImagesCollectionView::findSimilarities(QString fileName)
             colorTest[index + 72]++;
         }
     }
-    cout << "here4" << endl;
     delete selectedImage;
 
     FILE *file = fopen("/Users/Johnson/Desktop/Histogram.txt","r");
@@ -275,12 +281,10 @@ QStringList ImagesCollectionView::findSimilarities(QString fileName)
 
     memset(mixedData, 0, sizeof(int) * imagesCount);
 
-    cout << "here5" << endl;
     for (int i = 0; i < imagesCount; i++) {
         double similarity = 0;
         double color;
 
-        cout << "here6" << endl;
         fscanf(file, "%s", titleCollection[i]);
 
         for (int j = 0; j < 96; j++) {
@@ -292,19 +296,13 @@ QStringList ImagesCollectionView::findSimilarities(QString fileName)
     }
     fclose(file);
 
-    cout << "here8" << endl;
-
     quick_sort(mixedData, imageIndex, imagesCount);
-
-    cout << "here9" << endl;
 
     QStringList findResult;
 
     for (int i = imagesCount-1; i >= 0; i--) {
         findResult << titleCollection[imageIndex[i]];
     }
-
-    cout << "here10" << endl;
 
     FILE* output = fopen("/Users/Johnson/Desktop/Result.txt", "wr+");
 

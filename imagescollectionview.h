@@ -20,6 +20,7 @@ public:
     void tonextPage();
     void searchSimilarities();
     void searchSimilaritiesWithFileName(QString filename);
+    void clearPage();
     QStringList findSimilarities(QString fileName);
 signals:
 
