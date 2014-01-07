@@ -7,6 +7,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QProgressDialog>
+#include <QMessageBox>
 
 #include <iostream>
 
@@ -122,7 +123,11 @@ void MainWindow::searchClicked()
 void MainWindow::clearPage()
 {
     cout << "CBIR LOG MainWindow: clearButton clicked" << endl;
-    imagesCollectionView->clearPage();
+    int r = QMessageBox::warning(this, tr("Clear"),tr("Really clear?"),
+                                          QMessageBox::Yes, QMessageBox::No | QMessageBox::Default | QMessageBox::Escape);
+    if (r == QMessageBox::Yes) {
+        imagesCollectionView->clearPage();
+    }
 }
 
 MainWindow::~MainWindow()
