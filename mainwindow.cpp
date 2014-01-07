@@ -32,21 +32,25 @@ MainWindow::MainWindow(QWidget *parent)
 void MainWindow::createActions()
 {
     importAction = new QAction(tr("&Import"), this);
-    importAction->setIcon(QIcon(":/images/add.png"));
+    importAction->setIcon(QIcon(":/images/plus.png"));
     importAction->setStatusTip("import images");
     connect(importAction,SIGNAL(triggered()),this, SLOT(import()));
 
     nextAction = new QAction(tr("&next"), this);
-    nextAction->setIcon(QIcon(":/images/next.png"));
+    nextAction->setIcon(QIcon(":/images/skip_forward.png"));
     connect(nextAction,SIGNAL(triggered()),this, SLOT(tonextpage()));
 
     previousAction = new QAction(tr("&previous"), this);
-    previousAction->setIcon(QIcon(":/images/back.png"));
+    previousAction->setIcon(QIcon(":/images/skip_backward.png"));
     connect(previousAction,SIGNAL(triggered()),this, SLOT(topreviouspage()));
 
     searchAction = new QAction(tr("&search"), this);
     searchAction->setIcon(QIcon(":/images/search.png"));
     connect(searchAction,SIGNAL(triggered()),this, SLOT(search()));
+
+    clearAction = new QAction(tr("&clear"), this);
+    clearAction->setIcon(QIcon(":/images/delete.png"));
+    connect(clearAction,SIGNAL(triggered()),this, SLOT(clearPage()));
 }
 
 void MainWindow::createToolBar()
@@ -69,9 +73,8 @@ void MainWindow::createToolBar()
     inputToolBar->addWidget(confirmToSearch);
     inputToolBar->addSeparator();
     inputToolBar->addAction(searchAction);
-
-    connect(confirmToSearch, SIGNAL(clicked()),
-            this, SLOT(searchClicked()));
+    inputToolBar->addAction(clearAction);
+    connect(confirmToSearch, SIGNAL(clicked()),this, SLOT(searchClicked()));
 }
 
 void MainWindow::import()
@@ -112,8 +115,14 @@ void MainWindow::search()
 
 void MainWindow::searchClicked()
 {
-    cout << "CBIR LOG MainWindow: searchButton clicked";
+    cout << "CBIR LOG MainWindow: searchButton clicked" << endl;
     imagesCollectionView->searchSimilaritiesWithFileName(inputFileName->text());
+}
+
+void MainWindow::clearPage()
+{
+    cout << "CBIR LOG MainWindow: clearButton clicked" << endl;
+    imagesCollectionView->clearPage();
 }
 
 MainWindow::~MainWindow()
