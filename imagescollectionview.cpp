@@ -151,12 +151,13 @@ void ImagesCollectionView::searchSimilaritiesWithSift()
     for (int i = 0; i < siftCount; i++)
         index[i] = i;
 
-    QString selected = basePath + imagesCollection[0];
+    char* selected = (char*)qPrintable(basePath + imagesCollection[0]);
 
     for (int i = 0; i < siftCount; i++) {
-       QString beCompared = basePath + imagesCollection[i];
-   //     matches[i] = (double)sift(qPrintable(selected), qPrintable(beCompared));
+       char* beCompared = (char*)qPrintable(basePath + imagesCollection[i]);
+       matches[i] = (double)sift(selected, beCompared);
     }
+
     quick_sort(matches, index, siftCount);
 
     QStringList afterSift;
@@ -337,7 +338,6 @@ QStringList ImagesCollectionView::findSimilarities(QString fileName)
 
         for (int j = 0; j < 96; j++) {
             fscanf(file, "%lf", &color);
-            //cout << color << endl;
             similarity += sqrt((double)colorTest[j] / regionSize * color);
         }
         mixedData[i] = similarity / 4;
@@ -366,7 +366,6 @@ QStringList ImagesCollectionView::findSimilarities(QString fileName)
 
     delete [] titleCollection;
 
-    cout << "here11" << endl;
     return findResult;
 }
 
