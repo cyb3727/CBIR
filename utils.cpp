@@ -144,8 +144,8 @@ extern IplImage* stack_imgs( IplImage* img1, IplImage* img2 )
 {  
     IplImage* stacked = cvCreateImage( cvSize( MAX(img1->width, img2->width),  
                                         img1->height + img2->height ),  
-                                        IPL_DEPTH_8U, 3 );  
-  
+                                        IPL_DEPTH_8U, 3 );
+
     cvZero( stacked );  
     cvSetImageROI( stacked, cvRect( 0, 0, img1->width, img1->height ) );  
     cvAdd( img1, stacked, stacked, NULL );  

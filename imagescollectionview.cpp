@@ -2,9 +2,10 @@
 #include <QDir>
 #include <QMouseEvent>
 #include <QImage>
+#include <QProgressDialog>
+#include <QApplication>
 #include <iostream>
 #include <cmath>
-
 #include "sift.h"
 #include "imgfeatures.h"
 #include "kdtree.h"
@@ -141,9 +142,9 @@ void ImagesCollectionView::searchSimilaritiesWithFileName(QString filename)
     }
 }
 
-void ImagesCollectionView::searchSimilaritiesWithSift()
+bool ImagesCollectionView::searchSimilaritiesWithSift(QWidget* parent)
 {
-    int siftCount = 18;
+    int siftCount = 30;
     int imagesCount = imagesCollection.size();
     double* matches = new double[siftCount];
     int* index = new int[siftCount];
@@ -151,26 +152,42 @@ void ImagesCollectionView::searchSimilaritiesWithSift()
     for (int i = 0; i < siftCount; i++)
         index[i] = i;
 
-    char* selected = (char*)qPrintable(basePath + imagesCollection[0]);
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+
+    QProgressDialog progressDialog(parent);
+    progressDialog.setLabelText(QString("Compare images"));
+    progressDialog.setRange(0, siftCount);
+    progressDialog.setModal(true);
 
     for (int i = 0; i < siftCount; i++) {
-       char* beCompared = (char*)qPrintable(basePath + imagesCollection[i]);
-       matches[i] = (double)sift(selected, beCompared);
+        progressDialog.setValue(i);
+
+        if (progressDialog.wasCanceled()) {
+            QApplication::restoreOverrideCursor();
+            return false;
+        }
+        matches[i] = (double)sift((char*)qPrintable(basePath + "/" + imagesCollection[0]),
+               (char*)qPrintable(basePath + "/" + imagesCollection[i]));
+        cout << matches[i] << endl;
     }
 
     quick_sort(matches, index, siftCount);
 
+    cout << "here_finish" << endl;
     QStringList afterSift;
 
-    for (int i = 0; i < siftCount; i++)
+    for (int i = siftCount - 1; i >= 0; i--)
         afterSift << imagesCollection[index[i]];
-
 
     for (int i = siftCount; i < imagesCount; i++)
         afterSift << imagesCollection[i];
 
     imagesCollection = afterSift;
+    count = 0;
     createImagePage();
+
+    QApplication::restoreOverrideCursor();
+    return true;
 }
 
 void ImagesCollectionView::searchSimilarities()
@@ -421,7 +438,11 @@ int ImagesCollectionView::sift(char *img1_file, char *img2_file)
     img2 = cvLoadImage( img2_file, 1);
     if( ! img2 )
         fatal_error( "unable to load image from %s", img2_file );
+
+    cout << img1_file << endl;
+    cout << img2_file << endl;
     stacked = stack_imgs( img1, img2 );
+
 
     fprintf( stderr, "Finding features in %s...\n", img1_file );
     n1 = sift_features( img1, &feat1 );

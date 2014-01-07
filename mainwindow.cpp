@@ -51,7 +51,7 @@ void MainWindow::createActions()
 
     searchWithSiftAction = new QAction(tr("&searchSift"), this);
     searchWithSiftAction->setIcon(QIcon(":/images/like.png"));
-    connect(searchAction,SIGNAL(triggered()),this, SLOT(searchWithSift()));
+    connect(searchWithSiftAction,SIGNAL(triggered()),this, SLOT(searchWithSift()));
 
     clearAction = new QAction(tr("&clear"), this);
     clearAction->setIcon(QIcon(":/images/delete.png"));
@@ -66,7 +66,6 @@ void MainWindow::createToolBar()
     actionToolBar->addAction(previousAction);
     actionToolBar->addAction(nextAction);
     actionToolBar->addAction(clearAction);
-    connect(confirmToSearch, SIGNAL(clicked()),this, SLOT(searchClicked()));
 
     inputToolBar = addToolBar(tr("&input"));
     inputLabel = new QLabel(tr("& file name:"), this);
@@ -78,9 +77,11 @@ void MainWindow::createToolBar()
 
     confirmToSearch = new QPushButton(tr("&Search"), this);
     inputToolBar->addWidget(confirmToSearch);
+    connect(confirmToSearch, SIGNAL(clicked()),this, SLOT(searchClicked()));
 
     searchToolBar = addToolBar(tr("&search"));
     searchToolBar->addAction(searchAction);
+    searchToolBar->addAction(searchWithSiftAction);
 }
 
 void MainWindow::import()
@@ -123,6 +124,12 @@ void MainWindow::searchClicked()
 {
     cout << "CBIR LOG MainWindow: searchButton clicked" << endl;
     imagesCollectionView->searchSimilaritiesWithFileName(inputFileName->text());
+}
+
+void MainWindow::searchWithSift()
+{
+    cout << "CBIR LOG MainWindow: search with sift" << endl;
+    imagesCollectionView->searchSimilaritiesWithSift(this);
 }
 
 void MainWindow::clearPage()
