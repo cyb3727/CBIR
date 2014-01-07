@@ -24,6 +24,7 @@ private slots:
     void topreviouspage();
     void tonextpage();
     void search();
+    void searchWithSift();
     void clearPage();
     void searchClicked();
 
@@ -34,6 +35,7 @@ private:
     QAction *previousAction;
     QAction *nextAction;
     QAction *searchAction;
+    QAction *searchWithSiftAction;
     QAction *clearAction;
 
     ImagesCollectionView *imagesCollectionView;
@@ -42,6 +44,7 @@ private:
 
     QToolBar *actionToolBar;
     QToolBar *inputToolBar;
+    QToolBar *searchToolBar;
     QLabel *inputLabel;
     QLineEdit *inputFileName;
     QPushButton *confirmToSearch;

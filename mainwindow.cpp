@@ -49,6 +49,10 @@ void MainWindow::createActions()
     searchAction->setIcon(QIcon(":/images/search.png"));
     connect(searchAction,SIGNAL(triggered()),this, SLOT(search()));
 
+    searchWithSiftAction = new QAction(tr("&searchSift"), this);
+    searchWithSiftAction->setIcon(QIcon(":/images/like.png"));
+    connect(searchAction,SIGNAL(triggered()),this, SLOT(searchWithSift()));
+
     clearAction = new QAction(tr("&clear"), this);
     clearAction->setIcon(QIcon(":/images/delete.png"));
     connect(clearAction,SIGNAL(triggered()),this, SLOT(clearPage()));
@@ -61,6 +65,8 @@ void MainWindow::createToolBar()
     actionToolBar->addSeparator();
     actionToolBar->addAction(previousAction);
     actionToolBar->addAction(nextAction);
+    actionToolBar->addAction(clearAction);
+    connect(confirmToSearch, SIGNAL(clicked()),this, SLOT(searchClicked()));
 
     inputToolBar = addToolBar(tr("&input"));
     inputLabel = new QLabel(tr("& file name:"), this);
@@ -72,10 +78,9 @@ void MainWindow::createToolBar()
 
     confirmToSearch = new QPushButton(tr("&Search"), this);
     inputToolBar->addWidget(confirmToSearch);
-    inputToolBar->addSeparator();
-    inputToolBar->addAction(searchAction);
-    inputToolBar->addAction(clearAction);
-    connect(confirmToSearch, SIGNAL(clicked()),this, SLOT(searchClicked()));
+
+    searchToolBar = addToolBar(tr("&search"));
+    searchToolBar->addAction(searchAction);
 }
 
 void MainWindow::import()
