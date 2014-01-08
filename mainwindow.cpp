@@ -117,7 +117,7 @@ void MainWindow::tonextpage()
 void MainWindow::search()
 {
     cout << "CBIR LOG Search: search the similar pictures" << endl;
-    imagesCollectionView->searchSimilarities();
+    imagesCollectionView->searchSimilarities(this);
 }
 
 void MainWindow::searchClicked()
