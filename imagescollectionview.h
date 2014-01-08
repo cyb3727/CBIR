@@ -18,11 +18,11 @@ public:
     void readDirectoryFiles();
     void topreviousPage();
     void tonextPage();
-    void searchSimilarities();
+    void searchSimilarities(QWidget* parent);
     void searchSimilaritiesWithFileName(QString filename);
     bool searchSimilaritiesWithSift(QWidget *parent);
     void clearPage();
-    QStringList findSimilarities(QString fileName);
+    QStringList findSimilarities(QString fileName, QWidget *parent);
 signals:
 
 public slots:
@@ -33,6 +33,7 @@ protected:
 private:
     void printQStringToConsole(QString log);
     void createImagePage();
+    void calculateSearchAccuracy(QWidget *parent);
     int sift(char *img1_file, char *img2_file);
 
     int count;

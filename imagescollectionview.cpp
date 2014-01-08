@@ -4,6 +4,7 @@
 #include <QImage>
 #include <QProgressDialog>
 #include <QApplication>
+#include <QMessageBox>
 #include <iostream>
 #include <cmath>
 #include "sift.h"
@@ -134,7 +135,7 @@ void ImagesCollectionView::mousePressEvent(QMouseEvent *event)
 void ImagesCollectionView::searchSimilaritiesWithFileName(QString filename)
 {
     if (imagesCollection.contains(filename)) {
-        imagesCollection = findSimilarities(filename);
+        imagesCollection = findSimilarities(filename, this);
         count = 0;
         createImagePage();
     } else {
@@ -182,22 +183,25 @@ bool ImagesCollectionView::searchSimilaritiesWithSift(QWidget* parent)
     for (int i = siftCount; i < imagesCount; i++)
         afterSift << imagesCollection[i];
 
+    calculateSearchAccuracy(parent);
+
     imagesCollection = afterSift;
     count = 0;
     createImagePage();
 
     QApplication::restoreOverrideCursor();
+
     return true;
 }
 
-void ImagesCollectionView::searchSimilarities()
+void ImagesCollectionView::searchSimilarities(QWidget* parent)
 {
     if (selectedIndexofImage < 0)
         return;
 
     QString selectedFileName = imagesCollection[selectedIndexofImage];
 
-    imagesCollection = findSimilarities(selectedFileName);
+    imagesCollection = findSimilarities(selectedFileName, this);
 
     cout << "CBIR LOG ImagesCollectionView: selected file name "
             << qPrintable(selectedFileName) << endl;
@@ -205,7 +209,7 @@ void ImagesCollectionView::searchSimilarities()
     createImagePage();
 }
 
-QStringList ImagesCollectionView::findSimilarities(QString fileName)
+QStringList ImagesCollectionView::findSimilarities(QString fileName, QWidget* parent)
 {
     QImage *selectedImage = new QImage;
     selectedImage->load(basePath + "/" + fileName);
@@ -383,7 +387,41 @@ QStringList ImagesCollectionView::findSimilarities(QString fileName)
 
     delete [] titleCollection;
 
+    calculateSearchAccuracy(parent);
+
     return findResult;
+}
+
+void ImagesCollectionView::calculateSearchAccuracy(QWidget* parent)
+{
+    int size = imagesCollection.size();
+    int* result = new int[size];
+
+    for (int i = 0; i < size; i++) {
+        QStringList s = imagesCollection[i].split(".");
+        result[i] = s[0].toInt();
+    }
+
+    for (int i = 0; i < size; i++) result[i] = result[i] / 100;
+
+    int count = 0;
+    double sum = 0;
+    int crieria = result[0];
+
+    for (int i = 0; i < size; i++) {
+        int r = 0;
+        if (result[i] == crieria) {
+            count++;
+            r = 1;
+        }
+        sum += r * (double)count / (i+1);
+    }
+
+    double ap = sum / count;
+    cout << "CBIR LOG AP:" << ap << endl;
+
+    QMessageBox::warning(this, tr("AP"),tr("%1").arg(ap),
+                                              QMessageBox::Yes | QMessageBox::Default | QMessageBox::Escape);
 }
 
 int ImagesCollectionView::partition(double *data, int *index, int low,int high)
