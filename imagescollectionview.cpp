@@ -518,3 +518,189 @@ int ImagesCollectionView::sift(char *img1_file, char *img2_file)
     free( feat2 );
     return m;
 }
+
+void ImagesCollectionView::allResult()
+{
+    FILE* output = fopen("/Users/Johnson/Desktop/allResult.txt", "wr+");
+
+    for (int i = 0; i < 999; i++) {
+        QString selected = QString("%1.jpg").arg(i);
+        QStringList result = find(selected);
+        int count = result.size();
+        for (int j = 0; j < count; j++) {
+            const char* toprint = qPrintable(result[j].split(".")[0].append(" "));
+            fwrite(toprint, strlen(toprint), 1, output);
+        }
+        fwrite("\n", strlen("\n"), 1, output);
+    }
+    fclose(output);
+}
+
+QStringList ImagesCollectionView::find(QString fileName)
+{
+    QImage *selectedImage = new QImage;
+    selectedImage->load(basePath + "/" + fileName);
+
+    int Pattern[24][3] = {{0, 0, 0},
+        {0, 182, 0},
+        {0, 255, 170},
+        {36, 73, 0},
+        {36, 146, 170},
+        {36, 255, 0},
+        {73, 36, 170},
+        {73, 146, 0},
+        {73, 219, 170},
+        {109, 36, 0},
+        {109, 109, 170},
+        {109, 219, 0},
+        {146, 0, 170},
+        {146, 182, 170},
+        {182, 0, 0},
+        {182, 73, 170},
+        {182, 182, 0},
+        {182, 255, 170},
+        {219, 73, 0},
+        {219, 146, 170},
+        {219, 255, 0},
+        {255, 36, 170},
+        {255, 146, 0},
+        {255, 255, 255}}; // color pattern to be mapped
+    int colorTest[96];
+    int height = selectedImage->height();
+    int width = selectedImage->width();
+    int R,G,B,min,index;
+    int regionSize = height * width / 4;
+
+    memset(colorTest, 0, sizeof(int)* 96);
+
+
+    for (int y = 0; y < height/2; y++) {
+        for (int x = 0; x < width/2; x++) {
+            QRgb pixels = selectedImage->pixel(x, y);
+            QColor color = QColor(pixels);
+            R = color.red(); G = color.green(); B = color.blue();
+            min = abs(B - Pattern[0][2]) +
+                    abs(G - Pattern[0][1]) +
+                    abs(R - Pattern[0][0]);
+            index = 0;
+            for (int k = 1; k < 24; k++) {
+                int temp = abs(B - Pattern[k][2]) +
+                        abs(G - Pattern[k][1]) +
+                        abs(R - Pattern[k][0]);
+                if (temp < min) {
+                    min = temp;
+                    index = k;
+                }
+            }
+            colorTest[index]++;
+        }
+    }
+    for (int y = height/2 + 1; y < height; y++) {
+        for (int x = 0; x < width/2; x++) {
+            QRgb pixels = selectedImage->pixel(x, y);
+            QColor color = QColor(pixels);
+            R = color.red(); G = color.green(); B = color.blue();
+            min = abs(B - Pattern[0][2]) +
+                    abs(G - Pattern[0][1]) +
+                    abs(R - Pattern[0][0]);
+            index = 0;
+            for (int k = 1; k < 24; k++) {
+                int temp = abs(B - Pattern[k][2]) +
+                        abs(G - Pattern[k][1]) +
+                        abs(R - Pattern[k][0]);
+                if (temp < min) {
+                    min = temp;
+                    index = k;
+                }
+            }
+            colorTest[index + 24]++;
+        }
+    }
+    for (int y = 0; y < height/2; y++) {
+        for (int x = width/2+1; x < width; x++) {
+            QRgb pixels = selectedImage->pixel(x, y);
+            QColor color = QColor(pixels);
+            R = color.red(); G = color.green(); B = color.blue();
+            min = abs(B - Pattern[0][2]) +
+                    abs(G - Pattern[0][1]) +
+                    abs(R - Pattern[0][0]);
+            index = 0;
+            for (int k = 1; k < 24; k++) {
+                int temp = abs(B - Pattern[k][2]) +
+                        abs(G - Pattern[k][1]) +
+                        abs(R - Pattern[k][0]);
+                if (temp < min) {
+                    min = temp;
+                    index = k;
+                }
+            }
+            colorTest[index + 48]++;
+        }
+    }
+
+    for (int y = height/2 + 1; y < height; y++) {
+        for (int x = width/2 + 1; x < width; x++) {
+            QRgb pixels = selectedImage->pixel(x, y);
+            QColor color = QColor(pixels);
+            R = color.red(); G = color.green(); B = color.blue();
+            min = abs(B - Pattern[0][2]) +
+                    abs(G - Pattern[0][1]) +
+                    abs(R - Pattern[0][0]);
+            index = 0;
+            for (int k = 1; k < 24; k++) {
+                int temp = abs(B - Pattern[k][2]) +
+                        abs(G - Pattern[k][1]) +
+                        abs(R - Pattern[k][0]);
+                if (temp < min) {
+                    min = temp;
+                    index = k;
+                }
+            }
+            colorTest[index + 72]++;
+        }
+    }
+    delete selectedImage;
+
+    FILE *file = fopen("/Users/Johnson/Desktop/Histogram.txt","r");
+
+    cout << "CBIR LOG ImagesCollectionView: find, open histogram.txt successfully" << endl;
+
+    int imagesCount = imagesCollection.size();
+
+    double mixedData[1005];
+    int imageIndex[1005];
+
+    char** titleCollection = new char*[imagesCount];
+    for (int i = 0; i < imagesCount; i++)
+        titleCollection[i] = new char[50];
+
+    for (int i = 0; i < imagesCount; i++) imageIndex[i] = i;
+
+    memset(mixedData, 0, sizeof(int) * imagesCount);
+
+    for (int i = 0; i < imagesCount; i++) {
+        double similarity = 0;
+        double color;
+
+        fscanf(file, "%s", titleCollection[i]);
+
+        for (int j = 0; j < 96; j++) {
+            fscanf(file, "%lf", &color);
+            similarity += sqrt((double)colorTest[j] / regionSize * color);
+        }
+        mixedData[i] = similarity / 4;
+    }
+    fclose(file);
+
+    quick_sort(mixedData, imageIndex, imagesCount);
+
+    QStringList findResult;
+
+    for (int i = imagesCount-1; i >= 0; i--) {
+        findResult << titleCollection[imageIndex[i]];
+    }
+
+    delete [] titleCollection;
+
+    return findResult;
+}

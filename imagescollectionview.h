@@ -23,6 +23,7 @@ public:
     bool searchSimilaritiesWithSift(QWidget *parent);
     void clearPage();
     QStringList findSimilarities(QString fileName, QWidget *parent);
+    void allResult();
 signals:
 
 public slots:
@@ -47,6 +48,8 @@ private:
     int partition(double *data, int *index, int low,int high);
     void sort(double *data, int *index, int low, int high);
     void quick_sort(double *data, int *index, int n);
+
+    QStringList find(QString fileName);
 };
 
 #endif // IMAGESCOLLECTIONVIEW_H
