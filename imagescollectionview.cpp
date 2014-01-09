@@ -135,7 +135,7 @@ void ImagesCollectionView::mousePressEvent(QMouseEvent *event)
 void ImagesCollectionView::searchSimilaritiesWithFileName(QString filename)
 {
     if (imagesCollection.contains(filename)) {
-        imagesCollection = findSimilarities(filename, this);
+        imagesCollection = findSimilarities(filename);
         count = 0;
         createImagePage();
     } else {
@@ -145,7 +145,7 @@ void ImagesCollectionView::searchSimilaritiesWithFileName(QString filename)
 
 bool ImagesCollectionView::searchSimilaritiesWithSift(QWidget* parent)
 {
-    int siftCount = 30;
+    int siftCount = 100;
     int imagesCount = imagesCollection.size();
     double* matches = new double[siftCount];
     int* index = new int[siftCount];
@@ -183,8 +183,6 @@ bool ImagesCollectionView::searchSimilaritiesWithSift(QWidget* parent)
     for (int i = siftCount; i < imagesCount; i++)
         afterSift << imagesCollection[i];
 
-    calculateSearchAccuracy(parent);
-
     imagesCollection = afterSift;
     count = 0;
     createImagePage();
@@ -194,22 +192,23 @@ bool ImagesCollectionView::searchSimilaritiesWithSift(QWidget* parent)
     return true;
 }
 
-void ImagesCollectionView::searchSimilarities(QWidget* parent)
+void ImagesCollectionView::searchSimilarities()
 {
     if (selectedIndexofImage < 0)
         return;
 
     QString selectedFileName = imagesCollection[selectedIndexofImage];
 
-    imagesCollection = findSimilarities(selectedFileName, this);
+    imagesCollection = findSimilarities(selectedFileName);
 
     cout << "CBIR LOG ImagesCollectionView: selected file name "
             << qPrintable(selectedFileName) << endl;
     count = 0;
     createImagePage();
+
 }
 
-QStringList ImagesCollectionView::findSimilarities(QString fileName, QWidget* parent)
+QStringList ImagesCollectionView::findSimilarities(QString fileName)
 {
     QImage *selectedImage = new QImage;
     selectedImage->load(basePath + "/" + fileName);
@@ -386,8 +385,6 @@ QStringList ImagesCollectionView::findSimilarities(QString fileName, QWidget* pa
     fclose(output);
 
     delete [] titleCollection;
-
-    calculateSearchAccuracy(parent);
 
     return findResult;
 }

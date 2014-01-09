@@ -6,5 +6,6 @@
         <file>images/skip_backward.png</file>
         <file>images/skip_forward.png</file>
         <file>images/like.png</file>
+        <file>images/info.png</file>
     </qresource>
 </RCC>

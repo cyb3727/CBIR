@@ -26,6 +26,7 @@ private slots:
     void search();
     void searchWithSift();
     void clearPage();
+    void showAp();
     void searchClicked();
 
 private:
@@ -37,6 +38,7 @@ private:
     QAction *searchAction;
     QAction *searchWithSiftAction;
     QAction *clearAction;
+    QAction *showApAction;
 
     ImagesCollectionView *imagesCollectionView;
     ImageProccesser *imageProccessor;

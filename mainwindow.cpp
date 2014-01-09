@@ -56,6 +56,10 @@ void MainWindow::createActions()
     clearAction = new QAction(tr("&clear"), this);
     clearAction->setIcon(QIcon(":/images/delete.png"));
     connect(clearAction,SIGNAL(triggered()),this, SLOT(clearPage()));
+
+    showApAction = new QAction(tr("&show ap"), this);
+    showApAction->setIcon(QIcon(":/images/info.png"));
+    connect(showApAction, SIGNAL(triggered()),this,SLOT(showAp()));
 }
 
 void MainWindow::createToolBar()
@@ -82,6 +86,7 @@ void MainWindow::createToolBar()
     searchToolBar = addToolBar(tr("&search"));
     searchToolBar->addAction(searchAction);
     searchToolBar->addAction(searchWithSiftAction);
+    searchToolBar->addAction(showApAction);
 }
 
 void MainWindow::import()
@@ -117,7 +122,7 @@ void MainWindow::tonextpage()
 void MainWindow::search()
 {
     cout << "CBIR LOG Search: search the similar pictures" << endl;
-    imagesCollectionView->searchSimilarities(this);
+    imagesCollectionView->searchSimilarities();
 }
 
 void MainWindow::searchClicked()
@@ -140,6 +145,12 @@ void MainWindow::clearPage()
     if (r == QMessageBox::Yes) {
         imagesCollectionView->clearPage();
     }
+}
+
+void MainWindow::showAp()
+{
+    cout << "CBIR LOG MainWindow: show button clicked" << endl;
+    imagesCollectionView->calculateSearchAccuracy(this);
 }
 
 MainWindow::~MainWindow()
