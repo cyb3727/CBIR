@@ -25,6 +25,7 @@ public:
     QStringList findSimilarities(QString fileName);
     void allResult();
     void calculateSearchAccuracy(QWidget *parent);
+    void calculateTheGroupApValue();
 signals:
 
 public slots:
@@ -36,6 +37,7 @@ private:
     void printQStringToConsole(QString log);
     void createImagePage();
     int sift(char *img1_file, char *img2_file);
+    double calculateApValue();
 
     int count;
     int selectedIndexofImage;

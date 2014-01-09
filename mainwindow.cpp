@@ -104,6 +104,8 @@ void MainWindow::import()
 
         imageProccessor->setDirectory(directoryName);
         imageProccessor->proccessCreateTxtInfoForImages(this);
+
+        imagesCollectionView->calculateTheGroupApValue();
     }
 }
 

@@ -145,7 +145,7 @@ void ImagesCollectionView::searchSimilaritiesWithFileName(QString filename)
 
 bool ImagesCollectionView::searchSimilaritiesWithSift(QWidget* parent)
 {
-    int siftCount = 100;
+    int siftCount = 30;
     int imagesCount = imagesCollection.size();
     double* matches = new double[siftCount];
     int* index = new int[siftCount];
@@ -391,6 +391,13 @@ QStringList ImagesCollectionView::findSimilarities(QString fileName)
 
 void ImagesCollectionView::calculateSearchAccuracy(QWidget* parent)
 {
+
+    QMessageBox::warning(this, tr("AP"),tr("%1").arg(calculateApValue()),
+                                              QMessageBox::Yes | QMessageBox::Default | QMessageBox::Escape);
+}
+
+double ImagesCollectionView::calculateApValue()
+{
     int size = imagesCollection.size();
     int* result = new int[size];
 
@@ -417,8 +424,129 @@ void ImagesCollectionView::calculateSearchAccuracy(QWidget* parent)
     double ap = sum / count;
     cout << "CBIR LOG AP:" << ap << endl;
 
-    QMessageBox::warning(this, tr("AP"),tr("%1").arg(ap),
-                                              QMessageBox::Yes | QMessageBox::Default | QMessageBox::Escape);
+    return ap;
+}
+
+void ImagesCollectionView::calculateTheGroupApValue() {
+    QStringList group1;
+    for (int i = 0; i < 100; i++) {
+        group1 << QString("%1.jpg").arg(i);
+    }
+
+    double apsum = 0;
+    for (int i = 0; i < 100; i++) {
+        searchSimilaritiesWithFileName(group1[i]);
+        apsum += calculateApValue();
+    }
+    cout << "group1:" << apsum/100 << endl;
+
+    QStringList group2;
+    for (int i = 100; i < 200; i++) {
+        group2 << QString("%1.jpg").arg(i);
+    }
+
+    apsum = 0;
+    for (int i = 0; i < 100; i++) {
+        searchSimilaritiesWithFileName(group2[i]);
+        apsum += calculateApValue();
+    }
+    cout << "group2:" << apsum/100 << endl;
+
+    QStringList group3;
+    for (int i = 200; i < 300; i++) {
+        group3 << QString("%1.jpg").arg(i);
+    }
+
+    apsum = 0;
+    for (int i = 0; i < 100; i++) {
+        searchSimilaritiesWithFileName(group3[i]);
+        apsum += calculateApValue();
+    }
+    cout << "group3:" << apsum/100 << endl;
+
+    QStringList group4;
+    for (int i = 300; i < 400; i++) {
+        group4 << QString("%1.jpg").arg(i);
+    }
+
+    apsum = 0;
+    for (int i = 0; i < 100; i++) {
+        searchSimilaritiesWithFileName(group4[i]);
+        apsum += calculateApValue();
+    }
+    cout << "group4:" << apsum/100 << endl;
+
+    QStringList group5;
+    for (int i = 400; i < 500; i++) {
+        group5 << QString("%1.jpg").arg(i);
+    }
+
+    apsum = 0;
+    for (int i = 0; i < 100; i++) {
+        searchSimilaritiesWithFileName(group5[i]);
+        apsum += calculateApValue();
+    }
+    cout << "group5:" << apsum/100 << endl;
+
+    QStringList group6;
+    for (int i = 500; i < 600; i++) {
+        group6 << QString("%1.jpg").arg(i);
+    }
+
+    apsum = 0;
+    for (int i = 0; i < 100; i++) {
+        searchSimilaritiesWithFileName(group6[i]);
+        apsum += calculateApValue();
+    }
+    cout << "group6:" << apsum/100 << endl;
+
+    QStringList group7;
+    for (int i = 600; i < 700; i++) {
+        group7 << QString("%1.jpg").arg(i);
+    }
+
+    apsum = 0;
+    for (int i = 0; i < 100; i++) {
+        searchSimilaritiesWithFileName(group7[i]);
+        apsum += calculateApValue();
+    }
+    cout << "group7:" << apsum/100 << endl;
+
+    QStringList group8;
+    for (int i = 700; i < 800; i++) {
+        group8 << QString("%1.jpg").arg(i);
+    }
+
+    apsum = 0;
+    for (int i = 0; i < 100; i++) {
+        searchSimilaritiesWithFileName(group8[i]);
+        apsum += calculateApValue();
+    }
+    cout << "group8:" << apsum/100 << endl;
+
+    QStringList group9;
+    for (int i = 800; i < 900; i++) {
+        group9 << QString("%1.jpg").arg(i);
+    }
+
+    apsum = 0;
+    for (int i = 0; i < 100; i++) {
+        searchSimilaritiesWithFileName(group9[i]);
+        apsum += calculateApValue();
+    }
+    cout << "group9:" << apsum/100 << endl;
+
+    QStringList group10;
+    for (int i = 900; i < 1000; i++) {
+        group10 << QString("%1.jpg").arg(i);
+    }
+
+    apsum = 0;
+    for (int i = 0; i < 100; i++) {
+        searchSimilaritiesWithFileName(group10[i]);
+        apsum += calculateApValue();
+    }
+    cout << "group10:" << apsum/100 << endl;
 }
 
 int ImagesCollectionView::partition(double *data, int *index, int low,int high)
