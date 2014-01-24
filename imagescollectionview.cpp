@@ -648,7 +648,7 @@ void ImagesCollectionView::allResult()
 {
     FILE* output = fopen("/Users/Johnson/Desktop/allResult.txt", "wr+");
 
-    for (int i = 0; i < 999; i++) {
+    for (int i = 0; i < 1000; i++) {
         QString selected = QString("%1.jpg").arg(i);
         QStringList result = find(selected);
         int count = result.size();
